@@ -6,18 +6,16 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
- * cn.lx.shop.goods
- * `MapperScan   tk.mybatis.spring.annotation`包下的，用于扫描Mapper接口
+ * cn.lx.shop
  *
  * @Author Administrator
- * @date 10:21
+ * @date 15:54
  */
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan(basePackages = {"cn.lx.shop.goods.dao"})
+@MapperScan("cn.lx.shop.goods.dao")
 public class GoodsStart {
-
     public static void main(String[] args) {
-        SpringApplication.run(GoodsStart.class, args);
+        SpringApplication.run(GoodsStart.class,args);
     }
 }
