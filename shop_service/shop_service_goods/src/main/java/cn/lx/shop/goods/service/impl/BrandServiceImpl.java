@@ -144,4 +144,16 @@ public class BrandServiceImpl implements BrandService {
     public List<Brand> findAll() {
         return brandMapper.selectAll();
     }
+
+
+    /**
+     * 根据分类id查询该分类所用有的品牌信息
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Brand> findByCategoryId(Integer id) {
+        List<Brand> list = brandMapper.findByCategoryId(id);
+        return list;
+    }
 }

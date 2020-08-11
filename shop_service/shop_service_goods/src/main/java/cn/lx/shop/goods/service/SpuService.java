@@ -1,4 +1,5 @@
 package cn.lx.shop.goods.service;
+import cn.lx.shop.goods.pojo.Goods;
 import cn.lx.shop.goods.pojo.Spu;
 import com.github.pagehelper.PageInfo;
 import java.util.List;
@@ -34,12 +35,6 @@ public interface SpuService {
     List<Spu> findList(Spu spu);
 
     /***
-     * 删除Spu
-     * @param id
-     */
-    void delete(String id);
-
-    /***
      * 修改Spu数据
      * @param spu
      */
@@ -63,4 +58,76 @@ public interface SpuService {
      * @return
      */
     List<Spu> findAll();
+
+    /***
+     * 保存商品
+     * @return
+     */
+    void saveGoods(Goods goods);
+
+    /***
+     * 根据spuid查询商品信息
+     * @param id    spuid
+     * @return
+     */
+    Goods findGoodsById(Long id);
+
+
+    /***
+     * 根据spuid审核商品,自动上架
+     * @param id    spuid
+     * @return
+     */
+    void audit(Long id);
+
+
+    /***
+     * 根据spuid下架商品
+     * @param id    spuid
+     * @return
+     */
+    void pull(Long id);
+
+
+    /***
+     * 根据spuid上架商品
+     * @param id    spuid
+     * @return
+     */
+    void put(Long id);
+
+    /***
+     * 根据spuid批量上架商品
+     * @param ids    spuids
+     * @return
+     */
+    void putMany(Long[] ids);
+
+    /***
+     * 根据spuid批量下架商品
+     * @param ids    spuids
+     * @return
+     */
+    void pullMany(Long[] ids);
+
+    /***
+     * 逻辑删除商品
+     * @param id
+     * @return
+     */
+    void logicDelete(Long id);
+
+    /***
+     * 还原被逻辑删除的商品
+     * @param id
+     * @return
+     */
+    void restore(Long id);
+
+    /***
+     * 物理删除商品
+     * @param id
+     * @return
+     */
+    void delete(Long id);
 }

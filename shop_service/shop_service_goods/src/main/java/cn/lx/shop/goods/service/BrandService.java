@@ -63,4 +63,12 @@ public interface BrandService {
      * @return
      */
     List<Brand> findAll();
+
+
+    /***
+     * 根据分类id查询该分类所用有的品牌信息
+     * @param id
+     * @return
+     */
+    List<Brand> findByCategoryId(Integer id);
 }

@@ -99,7 +99,7 @@ public class SkuController {
     @ApiOperation(value = "Sku根据ID修改",notes = "根据ID修改Sku方法详情",tags = {"SkuController"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "String")
     @PutMapping(value="/{id}")
-    public Result update(@RequestBody @ApiParam(name = "Sku对象",value = "传入JSON数据",required = false) Sku sku, @PathVariable String id){
+    public Result update(@RequestBody @ApiParam(name = "Sku对象",value = "传入JSON数据",required = false) Sku sku, @PathVariable Long id){
         //设置主键值
         sku.setId(id);
         //调用SkuService实现修改Sku

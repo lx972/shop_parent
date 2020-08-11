@@ -145,4 +145,15 @@ public class ParaController {
         List<Para> list = paraService.findAll();
         return new Result<List<Para>>(true, StatusCode.OK,"查询成功",list) ;
     }
+
+    /***
+     * 根据分类的模板ID查询对应的参数列表
+     * @param  id
+     * @return
+     */
+    @GetMapping(value = "/category/{id}")
+    public Result<List<Para>> findByCategoryId(@PathVariable("id") Integer id){
+        List<Para> list = paraService.findByCategoryId(id);
+        return new Result<List<Para>>(true, StatusCode.OK,"查询成功",list) ;
+    }
 }

@@ -135,6 +135,17 @@ public class CategoryController {
     }
 
     /***
+     * 根据父id查询其下面的子分类
+     * @return
+     */
+    @GetMapping(value = "/list/{pid}")
+    public Result<List<Category>> findByParentId(@PathVariable("pid") Integer pid){
+        List<Category> list = categoryService.findByParentId(pid);
+        return new Result<List<Category>>(true, StatusCode.OK,"查询成功",list) ;
+    }
+
+
+    /***
      * 查询Category全部数据
      * @return
      */
@@ -145,4 +156,6 @@ public class CategoryController {
         List<Category> list = categoryService.findAll();
         return new Result<List<Category>>(true, StatusCode.OK,"查询成功",list) ;
     }
+
+
 }

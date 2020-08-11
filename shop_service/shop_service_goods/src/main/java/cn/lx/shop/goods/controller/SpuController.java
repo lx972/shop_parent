@@ -3,6 +3,7 @@ package cn.lx.shop.goods.controller;
 import cn.lx.shop.entity.PageResult;
 import cn.lx.shop.entity.Result;
 import cn.lx.shop.entity.StatusCode;
+import cn.lx.shop.goods.pojo.Goods;
 import cn.lx.shop.goods.pojo.Spu;
 import cn.lx.shop.goods.service.SpuService;
 import com.github.pagehelper.PageInfo;
@@ -84,7 +85,7 @@ public class SpuController {
     @ApiOperation(value = "Spu根据ID删除",notes = "根据ID删除Spu方法详情",tags = {"SpuController"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "String")
     @DeleteMapping(value = "/{id}" )
-    public Result delete(@PathVariable String id){
+    public Result delete(@PathVariable Long id){
         //调用SpuService实现根据主键删除
         spuService.delete(id);
         return new Result(true,StatusCode.OK,"删除成功");
@@ -99,7 +100,7 @@ public class SpuController {
     @ApiOperation(value = "Spu根据ID修改",notes = "根据ID修改Spu方法详情",tags = {"SpuController"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "String")
     @PutMapping(value="/{id}")
-    public Result update(@RequestBody @ApiParam(name = "Spu对象",value = "传入JSON数据",required = false) Spu spu, @PathVariable String id){
+    public Result update(@RequestBody @ApiParam(name = "Spu对象",value = "传入JSON数据",required = false) Spu spu, @PathVariable Long id){
         //设置主键值
         spu.setId(id);
         //调用SpuService实现修改Spu
@@ -144,5 +145,106 @@ public class SpuController {
         //调用SpuService实现查询所有Spu
         List<Spu> list = spuService.findAll();
         return new Result<List<Spu>>(true, StatusCode.OK,"查询成功",list) ;
+    }
+
+
+    /***
+     * 添加(修改）商品
+     * @param goods
+     * @return
+     */
+    @PostMapping(value = "/save")
+    public Result saveGoods(@RequestBody Goods goods){
+        spuService.saveGoods(goods);
+        return new Result(true, StatusCode.OK,"保存商品成功") ;
+    }
+
+
+    /***
+     * 根据spuid查询商品信息
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/goods/{id}")
+    public Result findGoodsById(@PathVariable("id") Long id){
+        spuService.findGoodsById(id);
+        return new Result(true, StatusCode.OK,"根据spuid查询商品信息成功") ;
+    }
+
+    /***
+     * 根据spuid审核商品,自动上架
+     * @param id
+     * @return
+     */
+    @PutMapping(value = "/audit/{id}")
+    public Result audit(@PathVariable("id") Long id){
+        spuService.audit(id);
+        return new Result(true, StatusCode.OK,"根据spuid审核，自动上架商品成功") ;
+    }
+
+    /***
+     * 根据spuid下架商品
+     * @param id
+     * @return
+     */
+    @PutMapping(value = "/pull/{id}")
+    public Result pull(@PathVariable("id") Long id){
+        spuService.pull(id);
+        return new Result(true, StatusCode.OK,"根据spuid下架商品成功") ;
+    }
+
+    /***
+     * 根据spuid上架商品
+     * @param id
+     * @return
+     */
+    @PutMapping(value = "/put/{id}")
+    public Result put(@PathVariable("id") Long id){
+        spuService.put(id);
+        return new Result(true, StatusCode.OK,"根据spuid上架商品成功") ;
+    }
+
+    /***
+     * 根据spuid批量上架商品
+     * @param ids
+     * @return
+     */
+    @PutMapping(value = "/put/many")
+    public Result putMany(@RequestBody Long[] ids){
+        spuService.putMany(ids);
+        return new Result(true, StatusCode.OK,"根据spuids批量上架商品成功") ;
+    }
+
+    /***
+     * 根据spuid批量下架商品
+     * @param ids
+     * @return
+     */
+    @PutMapping(value = "/pull/many")
+    public Result pullMany(@RequestBody Long[] ids){
+        spuService.pullMany(ids);
+        return new Result(true, StatusCode.OK,"根据spuid批量下架商品成功") ;
+    }
+
+    /***
+     * 逻辑删除商品
+     * @param id
+     * @return
+     */
+    @DeleteMapping(value = "/logic/delete/{id}")
+    public Result logicDelete(@PathVariable("id") Long id){
+        spuService.logicDelete(id);
+        return new Result(true, StatusCode.OK,"逻辑删除商品成功") ;
+    }
+
+    /***
+     * 还原被逻辑删除的商品
+     * @param id
+     * @return
+     */
+    @PutMapping(value = "/restore/{id}")
+    public Result restore(@PathVariable("id") Long id){
+        spuService.restore(id);
+        return new Result(true, StatusCode.OK,"还原被逻辑删除的商品成功") ;
     }
 }

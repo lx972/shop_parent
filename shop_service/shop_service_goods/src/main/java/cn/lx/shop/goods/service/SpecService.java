@@ -63,4 +63,11 @@ public interface SpecService {
      * @return
      */
     List<Spec> findAll();
+
+    /***
+     * 根据所选分类对应的模板ID查询对应的规格
+     * @param  id
+     * @return
+     */
+    List<Spec> findByCategoryId(Integer id);
 }

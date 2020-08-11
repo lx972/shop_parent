@@ -1,5 +1,7 @@
 package cn.lx.shop.goods.service.impl;
+import cn.lx.shop.goods.dao.CategoryMapper;
 import cn.lx.shop.goods.dao.ParaMapper;
+import cn.lx.shop.goods.pojo.Category;
 import cn.lx.shop.goods.pojo.Para;
 import cn.lx.shop.goods.service.ParaService;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +21,9 @@ public class ParaServiceImpl implements ParaService {
 
     @Autowired
     private ParaMapper paraMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
 
     /**
@@ -143,5 +148,20 @@ public class ParaServiceImpl implements ParaService {
     @Override
     public List<Para> findAll() {
         return paraMapper.selectAll();
+    }
+
+
+    /***
+     * 根据分类的模板ID查询对应的参数列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Para> findByCategoryId(Integer id) {
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        Para para = new Para();
+        para.setTemplateId(category.getTemplateId());
+        List<Para> list = paraMapper.select(para);
+        return list;
     }
 }

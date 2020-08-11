@@ -1,5 +1,7 @@
 package cn.lx.shop.goods.service.impl;
+import cn.lx.shop.goods.dao.CategoryMapper;
 import cn.lx.shop.goods.dao.TemplateMapper;
+import cn.lx.shop.goods.pojo.Category;
 import cn.lx.shop.goods.pojo.Template;
 import cn.lx.shop.goods.service.TemplateService;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +21,9 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Autowired
     private TemplateMapper templateMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
 
     /**
@@ -139,5 +144,18 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public List<Template> findAll() {
         return templateMapper.selectAll();
+    }
+
+    /**
+     * 根据分类id查询该分类对应的模板数据
+     * @param id
+     * @return
+     */
+    @Override
+    public Template findByCategoryId(Integer id) {
+        //查询分类信息
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        Template template = templateMapper.selectByPrimaryKey(category.getTemplateId());
+        return template;
     }
 }

@@ -145,4 +145,16 @@ public class SpecController {
         List<Spec> list = specService.findAll();
         return new Result<List<Spec>>(true, StatusCode.OK,"查询成功",list) ;
     }
+
+    /***
+     * 根据所选分类对应的模板ID查询对应的规格
+     * @param  id
+     * @return
+     */
+    @GetMapping(value = "/category/{id}")
+    public Result<List<Spec>> findByCategoryId(@PathVariable("id") Integer id){
+        //调用SpecService实现查询所有Spec
+        List<Spec> list = specService.findByCategoryId(id);
+        return new Result<List<Spec>>(true, StatusCode.OK,"查询成功",list) ;
+    }
 }

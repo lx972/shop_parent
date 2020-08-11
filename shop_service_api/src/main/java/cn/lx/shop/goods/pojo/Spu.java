@@ -20,7 +20,7 @@ public class Spu implements Serializable{
 	@ApiModelProperty(value = "主键",required = false)
 	@Id
     @Column(name = "id")
-	private String id;//主键
+	private Long id;//主键
 
 	@ApiModelProperty(value = "货号",required = false)
     @Column(name = "sn")
@@ -109,12 +109,12 @@ public class Spu implements Serializable{
 
 
 	//get方法
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
 	//set方法
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	//get方法

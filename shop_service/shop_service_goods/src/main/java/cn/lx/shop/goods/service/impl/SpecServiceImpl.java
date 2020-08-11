@@ -1,5 +1,7 @@
 package cn.lx.shop.goods.service.impl;
+import cn.lx.shop.goods.dao.CategoryMapper;
 import cn.lx.shop.goods.dao.SpecMapper;
+import cn.lx.shop.goods.pojo.Category;
 import cn.lx.shop.goods.pojo.Spec;
 import cn.lx.shop.goods.service.SpecService;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +21,9 @@ public class SpecServiceImpl implements SpecService {
 
     @Autowired
     private SpecMapper specMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
 
     /**
@@ -143,5 +148,21 @@ public class SpecServiceImpl implements SpecService {
     @Override
     public List<Spec> findAll() {
         return specMapper.selectAll();
+    }
+
+    /**
+     * 根据所选分类对应的模板ID查询对应的规格
+     * @param  id
+     * @return
+     */
+    @Override
+    public List<Spec> findByCategoryId(Integer id) {
+        //查询出分类信息
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        //根据分类信息中的templates查对应的规格
+        Spec spec = new Spec();
+        spec.setTemplateId(category.getTemplateId());
+        List<Spec> list = specMapper.select(spec);
+        return list;
     }
 }

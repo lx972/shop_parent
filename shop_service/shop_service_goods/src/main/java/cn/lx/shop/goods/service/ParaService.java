@@ -63,4 +63,11 @@ public interface ParaService {
      * @return
      */
     List<Para> findAll();
+
+    /**
+     * 根据分类的模板ID查询对应的参数列表
+     * @param id
+     * @return
+     */
+    List<Para> findByCategoryId(Integer id);
 }
