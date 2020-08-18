@@ -205,6 +205,8 @@ public class SkuesServiceImpl implements SkuesService {
                 if (entry.getKey().startsWith("spec_")) {
                     //和前端约定，以spec_开头的是规格,规格域名的拼接 specMap.口味   specMap.尺码
                     String name = "specMap." + entry.getKey().substring(5) + ".keyword";
+                    System.out.println(name);
+                    System.out.println(entry.getValue());
                     //设置按规格名的过滤查询matchQuery会先分词，然后在查询，termQuery直接查询
                     boolQueryBuilder.must(QueryBuilders.termQuery(name, entry.getValue()));
                 }
@@ -239,21 +241,27 @@ public class SkuesServiceImpl implements SkuesService {
      */
     private void setPageCondition(Map<String, String> searchMap, NativeSearchQueryBuilder nativeSearchQueryBuilder) {
         //第几页
-        Integer pageNum = null;
+        Integer pageNum = 1;
         //每页的记录数
-        Integer pageSize = null;
-        try {
+        Integer pageSize = 10;
+        if (searchMap.containsKey("pageNum")){
+            //第几页
             pageNum = Integer.valueOf(searchMap.get("pageNum"));
-        } catch (Exception e) {
-            pageNum = 1;
+            if (pageNum<1){
+                pageNum=1;
+            }
         }
-        try {
-            pageSize = Integer.valueOf(searchMap.get("pageSize"));
-        } catch (Exception e) {
-            pageSize = 10;
+       if (searchMap.containsKey("pageSize")){
+           //每页的记录数
+           pageSize = Integer.valueOf(searchMap.get("pageSize"));
+           if (pageSize<1){
+               pageSize=10;
+           }
         }
         //分页查
-        nativeSearchQueryBuilder.withPageable(PageRequest.of(pageNum, pageSize));
+        System.out.println(pageNum);
+        System.out.println(pageSize);
+        nativeSearchQueryBuilder.withPageable(PageRequest.of(pageNum-1, pageSize));
     }
 
     /**
