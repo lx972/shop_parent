@@ -9,9 +9,13 @@
         <module name="shop_service_content" />
         <module name="shop_common" />
         <module name="shop_common_db" />
+        <module name="shop_service_goods_api" />
+        <module name="shop_service_content_api" />
         <module name="shop_eureka" />
+        <module name="shop_service_search_api" />
         <module name="shop_service_canal" />
         <module name="shop_service_file" />
+        <module name="shop_service_search" />
         <module name="shop_service_goods" />
       </profile>
     </annotationProcessing>
@@ -23,8 +27,12 @@
       <module name="shop_eureka" options="-parameters" />
       <module name="shop_service_canal" options="-parameters" />
       <module name="shop_service_content" options="-parameters" />
+      <module name="shop_service_content_api" options="-parameters" />
       <module name="shop_service_file" options="-parameters" />
       <module name="shop_service_goods" options="-parameters" />
+      <module name="shop_service_goods_api" options="-parameters" />
+      <module name="shop_service_search" options="-parameters" />
+      <module name="shop_service_search_api" options="-parameters" />
     </option>
   </component>
 </project>

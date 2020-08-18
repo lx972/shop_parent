@@ -11,6 +11,11 @@
 
     <artifactId>shop_service_api</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>shop_service_search_api</module>
+        <module>shop_service_goods_api</module>
+        <module>shop_service_content_api</module>
+    </modules>
 
 
     <dependencies>

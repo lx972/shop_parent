@@ -16,6 +16,7 @@
         <module>shop_service_file</module>
         <module>shop_service_canal</module>
         <module>shop_service_content</module>
+        <module>shop_service_search</module>
     </modules>
 
 

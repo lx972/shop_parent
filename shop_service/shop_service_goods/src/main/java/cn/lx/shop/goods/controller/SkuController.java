@@ -145,4 +145,19 @@ public class SkuController {
         List<Sku> list = skuService.findAll();
         return new Result<List<Sku>>(true, StatusCode.OK,"查询成功",list) ;
     }
+
+
+    /***
+     * 查询审核通过的Sku数据
+     * @param status
+     * @return
+     */
+    @GetMapping(value = "/status/{status}")
+    public Result<List<Sku>> findByStatus(@PathVariable("status") String status){
+        Sku sku = new Sku();
+        sku.setStatus(status);
+        //调用SkuService实现查询所有Sku
+        List<Sku> list = skuService.findList(sku);
+        return new Result<List<Sku>>(true, StatusCode.OK,"查询审核通过的Sku数据",list) ;
+    }
 }

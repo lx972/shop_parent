@@ -58,7 +58,7 @@ public class CanalDataEventListener {
    }
 
     /**
-     * 自定义的监听操作
+     * 自定义的监听操作，更新数据到redis
      * @param eventType
      * @param rowData
      */
