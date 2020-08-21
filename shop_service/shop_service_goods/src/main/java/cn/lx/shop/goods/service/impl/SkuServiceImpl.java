@@ -151,7 +151,7 @@ public class SkuServiceImpl implements SkuService {
             if(!StringUtils.isEmpty(sku.getStatus())){
                     criteria.andEqualTo("status",sku.getStatus());
             }
-            // 
+            //
             if(!StringUtils.isEmpty(sku.getVersion())){
                     criteria.andEqualTo("version",sku.getVersion());
             }

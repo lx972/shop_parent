@@ -6,18 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="shop_service_search_api" />
         <module name="shop_service_content" />
-        <module name="shop_common" />
-        <module name="shop_common_db" />
-        <module name="shop_service_goods_api" />
-        <module name="shop_eureka" />
-        <module name="shop_web_search" />
-        <module name="shop_service_goods" />
-        <module name="shop_service_canal" />
-        <module name="shop_service_file" />
         <module name="shop_service_search" />
         <module name="shop_service_content_api" />
+        <module name="shop_service_file" />
+        <module name="shop_service_goods" />
+        <module name="shop_service_item_api" />
+        <module name="shop_web_search" />
+        <module name="shop_eureka" />
+        <module name="shop_common" />
+        <module name="shop_web_item" />
+        <module name="shop_service_content_canal" />
+        <module name="shop_service_item_canal" />
+        <module name="shop_service_goods_api" />
+        <module name="shop_service_search_api" />
+        <module name="shop_common_db" />
       </profile>
     </annotationProcessing>
   </component>
@@ -26,14 +29,17 @@
       <module name="shop_common" options="-parameters" />
       <module name="shop_common_db" options="-parameters" />
       <module name="shop_eureka" options="-parameters" />
-      <module name="shop_service_canal" options="-parameters" />
       <module name="shop_service_content" options="-parameters" />
       <module name="shop_service_content_api" options="-parameters" />
+      <module name="shop_service_content_canal" options="-parameters" />
       <module name="shop_service_file" options="-parameters" />
       <module name="shop_service_goods" options="-parameters" />
       <module name="shop_service_goods_api" options="-parameters" />
+      <module name="shop_service_item_api" options="-parameters" />
+      <module name="shop_service_item_canal" options="-parameters" />
       <module name="shop_service_search" options="-parameters" />
       <module name="shop_service_search_api" options="-parameters" />
+      <module name="shop_web_item" options="-parameters" />
       <module name="shop_web_search" options="-parameters" />
     </option>
   </component>

@@ -600,7 +600,10 @@
 								<a href="#">评价</a>
 							</li>
 							<li>
-								<a href="#">价格</a>
+								<a th:href="@{${sortUrl}(sortRule='asc',sortField='price')}">价格↑</a>
+							</li>
+                            <li>
+								<a th:href="@{${sortUrl}(sortRule='desc',sortField='price')}">价格↓</a>
 							</li>
 						</ul>
 					</div>
@@ -637,29 +640,17 @@
 					<div class="sui-pagination pagination-large">
 						<ul>
 							<li class="prev disabled">
-								<a href="#">«上一页</a>
+								<a th:href="@{${url}(pageNum=${page.getUpper()})}">«上一页</a>
 							</li>
-							<li class="active">
-								<a href="#">1</a>
-							</li>
-							<li>
-								<a href="#">2</a>
-							</li>
-							<li>
-								<a href="#">3</a>
-							</li>
-							<li>
-								<a href="#">4</a>
-							</li>
-							<li>
-								<a href="#">5</a>
+							<li th:each="i:${#numbers.sequence(page.getLpage(),page.getRpage())}" th:class="${page.getCurrentpage()==i?'active':''}">
+								<a th:href="@{${url}(pageNum=${i})}" th:text="${i}"></a>
 							</li>
 							<li class="dotted"><span>...</span></li>
 							<li class="next">
-								<a href="#">下一页»</a>
+								<a th:href="@{${url}(pageNum=${page.getNext()})}">下一页»</a>
 							</li>
 						</ul>
-						<div><span>共10页&nbsp;</span><span>
+						<div><span th:text="${'共'+page.getLast()+'页'}"></span><span>
       到第
       <input type="text" class="page-num">
       页 <button class="page-confirm" onclick="alert(1)">确定</button></span></div>

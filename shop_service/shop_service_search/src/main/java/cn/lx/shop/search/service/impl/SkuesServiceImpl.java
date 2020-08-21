@@ -31,6 +31,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -73,7 +74,7 @@ public class SkuesServiceImpl implements SkuesService {
      * @return
      */
     @Override
-    public Map search(Map<String, String> searchMap) {
+    public Map search(Map<String, String> searchMap){
         //创建查询对象的构建对象
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
 
@@ -84,8 +85,11 @@ public class SkuesServiceImpl implements SkuesService {
         nativeSearchQueryBuilder.withHighlightBuilder(new HighlightBuilder()
                 .preTags("<em style=\"color:red\">")
                 .postTags(("</em>")));
+        //返回结果
+        Map<String, Object> result = new HashMap<>(16);
+
         //多条件查询
-        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(searchMap, nativeSearchQueryBuilder);
+        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(searchMap, nativeSearchQueryBuilder,result);
 
         //设置分组
         setGroupList(nativeSearchQueryBuilder);
@@ -132,24 +136,22 @@ public class SkuesServiceImpl implements SkuesService {
                         ,searchResponse.getScrollId()); //排序
             }
         });
-        //返回结果
-        Map<String, Object> map = new HashMap<>(16);
-        map.put("rows", skuInfos.getContent());
-        map.put("total", skuInfos.getTotalElements());
-        map.put("totalPages", skuInfos.getTotalPages());
+
+        result.put("rows", skuInfos.getContent());
+        result.put("total", skuInfos.getTotalElements());
 
         //条件中存在分类的时候，就不显示分类名的聚合结果
         if (searchMap.get("categoryName") == null) {
             //处理分类名的聚合结果
             List<String> categoryList = handleAggregation(skuInfos, "categoryGroup");
-            map.put("categoryList", categoryList);
+            result.put("categoryList", categoryList);
         }
 
         //条件中存在品牌的时候，就不显示品牌名的聚合结果
         if (searchMap.get("brandName") == null) {
             //处理品牌名的聚合结果
             List<String> brandList = handleAggregation(skuInfos, "brandGroup");
-            map.put("brandList", brandList);
+            result.put("brandList", brandList);
         }
 
 
@@ -157,9 +159,9 @@ public class SkuesServiceImpl implements SkuesService {
         List<String> specList = handleAggregation(skuInfos, "specGroup");
         //将规格信息转化为map(前端所需要的格式）
         Map<String, Set<String>> specMap = handleSpec(specList);
-        map.put("specMap", specMap);
+        result.put("specMap", specMap);
 
-        return map;
+        return result;
     }
 
     /**
@@ -179,9 +181,10 @@ public class SkuesServiceImpl implements SkuesService {
      * 设置多条件查询的参数
      * @param searchMap
      * @param nativeSearchQueryBuilder
+     * @param result
      * @return
      */
-    private BoolQueryBuilder getBoolQueryBuilder(Map<String, String> searchMap, NativeSearchQueryBuilder nativeSearchQueryBuilder) {
+    private BoolQueryBuilder getBoolQueryBuilder(Map<String, String> searchMap, NativeSearchQueryBuilder nativeSearchQueryBuilder,Map<String, Object> result){
         //多条件查询的对象
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
@@ -205,21 +208,28 @@ public class SkuesServiceImpl implements SkuesService {
                 if (entry.getKey().startsWith("spec_")) {
                     //和前端约定，以spec_开头的是规格,规格域名的拼接 specMap.口味   specMap.尺码
                     String name = "specMap." + entry.getKey().substring(5) + ".keyword";
+                    //前端通过url传过来的数据中的＋号在后端被识别成空格
+                    String value = StringUtils.replace(entry.getValue().toString(), " ", "+");
                     System.out.println(name);
-                    System.out.println(entry.getValue());
+                    System.out.println(value);
                     //设置按规格名的过滤查询matchQuery会先分词，然后在查询，termQuery直接查询
-                    boolQueryBuilder.must(QueryBuilders.termQuery(name, entry.getValue()));
+                    boolQueryBuilder.must(QueryBuilders.termQuery(name, value));
                 }
             }
             String price = (String) searchMap.get("price");
             if (!StringUtils.isEmpty(price)) {
-                //格式为300-500
+                //格式为300-500  3000-*
                 String[] split = price.split("-");
                 //设置价格区间查询
-                boolQueryBuilder.must(QueryBuilders.rangeQuery("price").from(split[0], true).to(split[1], true));
+                //>split[0]
+                boolQueryBuilder.must(QueryBuilders.rangeQuery("price").gt(split[0]));
+                if (!split[1].equals("*")){
+                    //<=split[1]
+                    boolQueryBuilder.must(QueryBuilders.rangeQuery("price").lte(split[1]));
+                }
             }
             //分页查询参数
-            setPageCondition(searchMap, nativeSearchQueryBuilder);
+            setPageCondition(searchMap, nativeSearchQueryBuilder,result);
             //排序
             //要排序的类型desc  asc
             String sortRule = (String) searchMap.get("sortRule");
@@ -238,8 +248,9 @@ public class SkuesServiceImpl implements SkuesService {
      *
      * @param searchMap
      * @param nativeSearchQueryBuilder
+     * @param result
      */
-    private void setPageCondition(Map<String, String> searchMap, NativeSearchQueryBuilder nativeSearchQueryBuilder) {
+    private void setPageCondition(Map<String, String> searchMap, NativeSearchQueryBuilder nativeSearchQueryBuilder,Map<String, Object> result) {
         //第几页
         Integer pageNum = 1;
         //每页的记录数
@@ -261,6 +272,8 @@ public class SkuesServiceImpl implements SkuesService {
         //分页查
         System.out.println(pageNum);
         System.out.println(pageSize);
+        result.put("pageNum",pageNum);
+        result.put("pageSize",pageSize);
         nativeSearchQueryBuilder.withPageable(PageRequest.of(pageNum-1, pageSize));
     }
 
