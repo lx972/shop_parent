@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * cn.lx.shop.item.controller
+ * cn.lx.shop.item.cn.lx.shop.user.controller
  *
  * @Author Administrator
  * @date 14:54

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 /**
- * cn.lx.shop.search.controller
+ * cn.lx.shop.search.cn.lx.shop.user.controller
  *
  * @Author Administrator
  * @date 14:59

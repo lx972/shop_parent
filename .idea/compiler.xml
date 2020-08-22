@@ -10,14 +10,18 @@
         <module name="shop_service_search" />
         <module name="shop_service_content_api" />
         <module name="shop_service_file" />
+        <module name="shop_service_user_api" />
+        <module name="shop_user_oauth" />
+        <module name="shop_service_item_canal" />
         <module name="shop_service_goods" />
         <module name="shop_service_item_api" />
         <module name="shop_web_search" />
         <module name="shop_eureka" />
         <module name="shop_common" />
+        <module name="shop_gateway_web" />
         <module name="shop_web_item" />
         <module name="shop_service_content_canal" />
-        <module name="shop_service_item_canal" />
+        <module name="shop_service_user" />
         <module name="shop_service_goods_api" />
         <module name="shop_service_search_api" />
         <module name="shop_common_db" />
@@ -29,6 +33,7 @@
       <module name="shop_common" options="-parameters" />
       <module name="shop_common_db" options="-parameters" />
       <module name="shop_eureka" options="-parameters" />
+      <module name="shop_gateway_web" options="-parameters" />
       <module name="shop_service_content" options="-parameters" />
       <module name="shop_service_content_api" options="-parameters" />
       <module name="shop_service_content_canal" options="-parameters" />
@@ -39,6 +44,9 @@
       <module name="shop_service_item_canal" options="-parameters" />
       <module name="shop_service_search" options="-parameters" />
       <module name="shop_service_search_api" options="-parameters" />
+      <module name="shop_service_user" options="-parameters" />
+      <module name="shop_service_user_api" options="-parameters" />
+      <module name="shop_user_oauth" options="-parameters" />
       <module name="shop_web_item" options="-parameters" />
       <module name="shop_web_search" options="-parameters" />
     </option>

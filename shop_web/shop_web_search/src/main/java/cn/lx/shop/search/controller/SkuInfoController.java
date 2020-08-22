@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 /**
- * cn.lx.shop.search.controller
+ * cn.lx.shop.search.cn.lx.shop.user.controller
  *
  * @Author Administrator
  * @date 15:03
