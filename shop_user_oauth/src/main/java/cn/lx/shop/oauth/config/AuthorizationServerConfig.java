@@ -55,7 +55,7 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("shop")          //客户端id
-                .secret("shop")                      //秘钥，和配置文件的secret不是一个
+                .secret("shop")                      //客户端秘钥，和配置文件的secret不是一个
                 .redirectUris("http://localhost")       //重定向地址
                 .accessTokenValiditySeconds(3600)          //访问令牌有效期
                 .refreshTokenValiditySeconds(3600)         //刷新令牌有效期

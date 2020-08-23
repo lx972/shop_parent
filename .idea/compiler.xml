@@ -9,21 +9,21 @@
         <module name="shop_service_content" />
         <module name="shop_service_search" />
         <module name="shop_service_content_api" />
+        <module name="shop_service_search_api" />
         <module name="shop_service_file" />
         <module name="shop_service_user_api" />
-        <module name="shop_user_oauth" />
-        <module name="shop_service_item_canal" />
         <module name="shop_service_goods" />
         <module name="shop_service_item_api" />
         <module name="shop_web_search" />
         <module name="shop_eureka" />
         <module name="shop_common" />
-        <module name="shop_gateway_web" />
+        <module name="shop_user_oauth" />
         <module name="shop_web_item" />
-        <module name="shop_service_content_canal" />
         <module name="shop_service_user" />
+        <module name="shop_service_content_canal" />
+        <module name="shop_service_item_canal" />
         <module name="shop_service_goods_api" />
-        <module name="shop_service_search_api" />
+        <module name="shop_gateway_web" />
         <module name="shop_common_db" />
       </profile>
     </annotationProcessing>
