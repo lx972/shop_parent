@@ -25,8 +25,16 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
-                "/user/login",
-                "/user/logout");
+                "/user/login"
+                ,"/user/logout"
+                ,"/oauth/login"
+                ,"/login.html"
+                ,"/css/**"
+                ,"/data/**"
+                ,"/fonts/**"
+                ,"/img/**"
+                ,"/js/**"
+        );
     }
 
     /***
@@ -56,7 +64,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /****
-     *
+     * http请求配置
      * @param http
      * @throws Exception
      */
@@ -65,11 +73,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .httpBasic()        //启用Http基本身份验证
                 .and()
-                .formLogin()       //启用表单身份验证
-                .and()
+                //.formLogin()       //启用表单身份验证
+                //.and()
                 .authorizeRequests()    //限制基于Request请求访问
                 .anyRequest()
                 .authenticated();       //其他请求都需要经过验证
 
+        http.formLogin()
+                .loginPage("/oauth/login")//自定义的登录页面
+        .loginProcessingUrl("/user/login");//登录过程处理的路径
     }
 }

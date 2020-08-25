@@ -20,6 +20,8 @@ spring:
     password: 1234
   main:
     allow-bean-definition-overriding: true
+  thymeleaf:
+    cache: false
 eureka:
   instance:
     prefer-ip-address: true

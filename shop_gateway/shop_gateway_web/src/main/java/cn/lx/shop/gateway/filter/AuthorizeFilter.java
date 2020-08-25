@@ -1,5 +1,8 @@
 package cn.lx.shop.gateway.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -21,8 +24,13 @@ import reactor.core.publisher.Mono;
 @Component
 public class AuthorizeFilter implements GlobalFilter, Ordered {
 
+    @Autowired
+    private LoadBalancerClient loadBalancerClient;
+
     //令牌头名字
     private static final String AUTHORIZE_TOKEN = "Authorization";
+
+
 
     /**
      * 对所有访问网关的请求进行过滤
@@ -33,13 +41,16 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+        //获取登录页的url
+        String url = getUserOauthUrl();
+
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         //为true说明请求头中已包含令牌
         boolean flag=true;
         //放行不需要认证的请求
         String path = request.getPath().toString();
-        if (!URLFilter.hasAuthorize(path)){
+        if (URLFilter.hasAuthorize(path)){
             //登录请求，放行
             return chain.filter(exchange);
         }
@@ -59,7 +70,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         }
         if (StringUtils.isEmpty(token)){
             //该请求中没有令牌
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            //response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            //重定向到登录页
+            redirectLogin(url,request.getURI().toString(), response);
             return response.setComplete();
         }
 
@@ -78,6 +91,31 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         }
         //放行
         return chain.filter(exchange);
+    }
+
+    /**
+     * 重定向到登录页
+     * @param url   登录页
+     * @param path  要访问的地址
+     * @param response
+     */
+    private void redirectLogin(String url,String path, ServerHttpResponse response) {
+        response.setStatusCode(HttpStatus.SEE_OTHER);
+        response.getHeaders().set("Location",url+"?from="+path);
+    }
+
+    /**
+     * 获取登录页的url
+     * @return
+     */
+    private String getUserOauthUrl() {
+        ServiceInstance serviceInstance = loadBalancerClient.choose("user-oauth");
+        if (serviceInstance==null){
+            throw new RuntimeException("user-oauth服务找不到");
+        }
+        String url = serviceInstance.getUri().toString()+"/oauth/login";
+        System.out.println(url);
+        return url;
     }
 
     @Override

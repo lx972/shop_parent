@@ -10,7 +10,7 @@ public class URLFilter {
     /**
      * 要放行的路径
      */
-    private static final String noAuthorizeurls = "/api/user/add,/api/user/login";
+    private static final String noAuthorizeurls = "/api/oauth/login";
 
 
     /**
