@@ -19,6 +19,7 @@
         <module>shop_service_content_canal</module>
         <module>shop_service_item_canal</module>
         <module>shop_service_user</module>
+        <module>shop_service_order</module>
     </modules>
 
 

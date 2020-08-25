@@ -1,13 +1,10 @@
 package cn.lx.shop.gateway.filter;
 
-import cn.lx.shop.gateway.utils.JwtUtil;
-import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.RequestPath;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -38,9 +35,11 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-        //放行登录的请求
+        //为true说明请求头中已包含令牌
+        boolean flag=true;
+        //放行不需要认证的请求
         String path = request.getPath().toString();
-        if (path.startsWith("/api/user/login")){
+        if (!URLFilter.hasAuthorize(path)){
             //登录请求，放行
             return chain.filter(exchange);
         }
@@ -48,6 +47,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String token = request.getHeaders().getFirst(AUTHORIZE_TOKEN);
         if (StringUtils.isEmpty(token)){
             //请求头中没有令牌，就去参数中查找
+            flag=false;
             token = request.getQueryParams().getFirst(AUTHORIZE_TOKEN);
         }
         if (StringUtils.isEmpty(token)){
@@ -62,13 +62,19 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }
-        //解析该令牌
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-        } catch (Exception e) {
-            //解析失败
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();
+
+        if (!flag){
+            //请求头中没有令牌
+            token="bearer "+token;
+            //在请求头中添加令牌
+            request.mutate().header(AUTHORIZE_TOKEN,token);
+        }else {
+            //请求头中有令牌
+            if (!token.startsWith("bearer ")&&!token.startsWith("Bearer ")){
+                //令牌格式不对
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                return response.setComplete();
+            }
         }
         //放行
         return chain.filter(exchange);

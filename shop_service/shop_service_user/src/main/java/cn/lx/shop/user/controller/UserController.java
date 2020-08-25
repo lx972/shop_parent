@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -157,9 +158,10 @@ public class UserController {
      * @param id
      * @return
      */
+    //@PreAuthorize("hasAnyAuthority('admin')")
     @ApiOperation(value = "User根据ID查询",notes = "根据ID查询User方法详情",tags = {"UserController"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "String")
-    @GetMapping("/{id}")
+    @GetMapping(value = {"/{id}"})
     public Result<User> findById(@PathVariable String id){
         //调用UserService实现根据主键查询User
         User user = userService.findById(id);

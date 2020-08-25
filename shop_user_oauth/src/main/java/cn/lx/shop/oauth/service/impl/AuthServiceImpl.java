@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private LoadBalancerClient loadBalancerClient;
 
     /**
-     * 授权认证方法
+     * 密码授权认证方法
      * @param username
      * @param password
      * @param clientId

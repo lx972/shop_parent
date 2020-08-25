@@ -53,7 +53,7 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+        /*clients.inMemory()
                 .withClient("shop")          //客户端id
                 .secret("shop")                      //客户端秘钥，和配置文件的secret不是一个
                 .redirectUris("http://localhost")       //重定向地址
@@ -64,7 +64,9 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
                         "client_credentials",          //客户端认证
                         "refresh_token",                //刷新令牌
                         "password")                     //密码方式认证
-                .scopes("app");                         //客户端范围，名称自定义，必填
+                .scopes("app");                         //客户端范围，名称自定义，必填*/
+        //数据库端加载
+        clients.jdbc(dataSource).clients(clientDetails());
     }
 
     /***
@@ -124,11 +126,11 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     public JwtAccessTokenConverter jwtAccessTokenConverter(CustomUserAuthenticationConverter customUserAuthenticationConverter) {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         KeyPair keyPair = new KeyStoreKeyFactory(
-                keyProperties.getKeyStore().getLocation(),                          //证书路径 changgou.jks
-                keyProperties.getKeyStore().getSecret().toCharArray())              //证书秘钥 changgouapp
+                keyProperties.getKeyStore().getLocation(),                          //证书路径 shop.jks
+                keyProperties.getKeyStore().getSecret().toCharArray())              //证书秘钥 shop123
                 .getKeyPair(
-                        keyProperties.getKeyStore().getAlias(),                     //证书别名 changgou
-                        keyProperties.getKeyStore().getPassword().toCharArray());   //证书密码 changgou
+                        keyProperties.getKeyStore().getAlias(),                     //证书别名 shop
+                        keyProperties.getKeyStore().getPassword().toCharArray());   //证书密码 shoptest
         converter.setKeyPair(keyPair);
         //配置自定义的CustomUserAuthenticationConverter
         DefaultAccessTokenConverter accessTokenConverter = (DefaultAccessTokenConverter) converter.getAccessTokenConverter();

@@ -1,10 +1,12 @@
 package cn.lx.shop.search;
 
+import cn.lx.shop.interceptor.FeignInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 
 /**
  * cn.lx.shop
@@ -27,5 +29,14 @@ public class SearchStart {
          */
         System.setProperty("es.set.netty.runtime.available.processors", "false");
         SpringApplication.run(SearchStart.class, args);
+    }
+
+    /**
+     * 注入feign请求的拦截器
+     * @return
+     */
+    @Bean
+    public FeignInterceptor feignInterceptor(){
+        return new FeignInterceptor();
     }
 }

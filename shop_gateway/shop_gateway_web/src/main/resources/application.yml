@@ -42,6 +42,19 @@ spring:
                 key-resolver: "#{@userKeyResolver}"
                 redis-rate-limiter.replenishRate: 1
                 redis-rate-limiter.burstCapacity: 1
+        #用户微服务的网关配置
+        - id: requestratelimiter_order_route
+          uri: lb://order
+          predicates:
+            - Path=/api/car/**,/api/categoryReport/**,/api/orderConfig/**,/api/order/**,/api/orderItem/**,/api/orderLog/**,/api/preferential/**,/api/returnCause/**,/api/returnOrder/**,/api/returnOrderItem/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                #rate-limiter: "#{@myRateLimiter}"
+                key-resolver: "#{@userKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
 
 
   redis:

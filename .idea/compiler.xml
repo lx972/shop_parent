@@ -6,24 +6,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="shop_gateway_web" />
         <module name="shop_service_content" />
         <module name="shop_service_search" />
         <module name="shop_service_content_api" />
-        <module name="shop_service_search_api" />
         <module name="shop_service_file" />
+        <module name="shop_service_item_canal" />
         <module name="shop_service_user_api" />
+        <module name="shop_service_order_api" />
         <module name="shop_service_goods" />
         <module name="shop_service_item_api" />
         <module name="shop_web_search" />
         <module name="shop_eureka" />
+        <module name="shop_service_order" />
         <module name="shop_common" />
         <module name="shop_user_oauth" />
         <module name="shop_web_item" />
-        <module name="shop_service_user" />
         <module name="shop_service_content_canal" />
-        <module name="shop_service_item_canal" />
+        <module name="shop_service_user" />
         <module name="shop_service_goods_api" />
-        <module name="shop_gateway_web" />
+        <module name="shop_service_search_api" />
         <module name="shop_common_db" />
       </profile>
     </annotationProcessing>
@@ -42,6 +44,8 @@
       <module name="shop_service_goods_api" options="-parameters" />
       <module name="shop_service_item_api" options="-parameters" />
       <module name="shop_service_item_canal" options="-parameters" />
+      <module name="shop_service_order" options="-parameters" />
+      <module name="shop_service_order_api" options="-parameters" />
       <module name="shop_service_search" options="-parameters" />
       <module name="shop_service_search_api" options="-parameters" />
       <module name="shop_service_user" options="-parameters" />
