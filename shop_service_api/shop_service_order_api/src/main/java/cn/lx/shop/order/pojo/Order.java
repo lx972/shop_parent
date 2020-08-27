@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.lang.String;
 import java.lang.Integer;
+import java.util.List;
+
 /****
  * @Author:shenkunlin
  * @Description:Order构建
@@ -26,19 +28,19 @@ public class Order implements Serializable{
 
 	@ApiModelProperty(value = "金额合计",required = false)
     @Column(name = "total_money")
-	private Integer totalMoney;//金额合计
+	private Double totalMoney;//金额合计
 
 	@ApiModelProperty(value = "优惠金额",required = false)
     @Column(name = "pre_money")
-	private Integer preMoney;//优惠金额
+	private Double preMoney;//优惠金额
 
 	@ApiModelProperty(value = "邮费",required = false)
     @Column(name = "post_fee")
-	private Integer postFee;//邮费
+	private Double postFee;//邮费
 
 	@ApiModelProperty(value = "实付金额",required = false)
     @Column(name = "pay_money")
-	private Integer payMoney;//实付金额
+	private Double payMoney;//实付金额
 
 	@ApiModelProperty(value = "支付类型，1、在线支付、0 货到付款",required = false)
     @Column(name = "pay_type")
@@ -110,7 +112,7 @@ public class Order implements Serializable{
 
 	@ApiModelProperty(value = "订单状态 ",required = false)
     @Column(name = "order_status")
-	private String orderStatus;//订单状态 
+	private String orderStatus;//订单状态
 
 	@ApiModelProperty(value = "支付状态 0:未支付 1:已支付",required = false)
     @Column(name = "pay_status")
@@ -124,7 +126,18 @@ public class Order implements Serializable{
     @Column(name = "is_delete")
 	private String isDelete;//是否删除
 
+	/**
+	 * 自定义，用来保存选中商品的id
+	 */
+	private List<String> skuIds;
 
+	public List<String> getSkuIds() {
+		return skuIds;
+	}
+
+	public void setSkuIds(List<String> skuIds) {
+		this.skuIds = skuIds;
+	}
 
 	//get方法
 	public String getId() {
@@ -145,39 +158,39 @@ public class Order implements Serializable{
 		this.totalNum = totalNum;
 	}
 	//get方法
-	public Integer getTotalMoney() {
+	public Double getTotalMoney() {
 		return totalMoney;
 	}
 
 	//set方法
-	public void setTotalMoney(Integer totalMoney) {
+	public void setTotalMoney(Double totalMoney) {
 		this.totalMoney = totalMoney;
 	}
 	//get方法
-	public Integer getPreMoney() {
+	public Double getPreMoney() {
 		return preMoney;
 	}
 
 	//set方法
-	public void setPreMoney(Integer preMoney) {
+	public void setPreMoney(Double preMoney) {
 		this.preMoney = preMoney;
 	}
 	//get方法
-	public Integer getPostFee() {
+	public Double getPostFee() {
 		return postFee;
 	}
 
 	//set方法
-	public void setPostFee(Integer postFee) {
+	public void setPostFee(Double postFee) {
 		this.postFee = postFee;
 	}
 	//get方法
-	public Integer getPayMoney() {
+	public Double getPayMoney() {
 		return payMoney;
 	}
 
 	//set方法
-	public void setPayMoney(Integer payMoney) {
+	public void setPayMoney(Double payMoney) {
 		this.payMoney = payMoney;
 	}
 	//get方法

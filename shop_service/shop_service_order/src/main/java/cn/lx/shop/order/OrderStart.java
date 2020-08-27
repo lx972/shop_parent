@@ -1,5 +1,6 @@
 package cn.lx.shop.order;
 
+import cn.lx.shop.entity.IdWorker;
 import cn.lx.shop.interceptor.FeignInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +18,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.order"})
 @EnableEurekaClient
 @MapperScan(basePackages = "cn.lx.shop.order.dao")
-@EnableFeignClients(basePackages = "cn.lx.shop.goods.feign")
+@EnableFeignClients(basePackages = {"cn.lx.shop.goods.feign","cn.lx.shop.user.feign"})
 public class OrderStart {
 
     public static void main(String[] args) {
@@ -32,5 +33,15 @@ public class OrderStart {
     @Bean
     public FeignInterceptor feignInterceptor(){
         return new FeignInterceptor();
+    }
+
+
+    /**
+     * 主键生成器
+     * @return
+     */
+    @Bean
+    public IdWorker idWorker(){
+        return new IdWorker(0,0);
     }
 }

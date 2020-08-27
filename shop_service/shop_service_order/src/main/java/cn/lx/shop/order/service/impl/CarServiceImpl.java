@@ -85,7 +85,11 @@ public class CarServiceImpl implements CarService {
         item.setName(sku.getName());
         item.setPrice(sku.getPrice());
         item.setNum(num);
+        item.setMoney(num*item.getPrice());
+        item.setWeight(sku.getWeight());
         item.setImage(sku.getImage());
+        //0 未退货
+        item.setIsReturn("0");
         return item;
     }
 }

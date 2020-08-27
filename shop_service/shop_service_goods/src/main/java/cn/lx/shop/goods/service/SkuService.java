@@ -63,4 +63,12 @@ public interface SkuService {
      * @return
      */
     List<Sku> findAll();
+
+    /**
+     * 下单后更新商品库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    int decrCount(String skuId, String num);
 }

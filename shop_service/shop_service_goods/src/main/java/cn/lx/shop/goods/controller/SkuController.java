@@ -26,6 +26,22 @@ public class SkuController {
     @Autowired
     private SkuService skuService;
 
+    /**
+     * 下单后更新商品库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @PutMapping(value = "/decr/count")
+    public Result decrCount(String skuId,String num){
+        int udp=skuService.decrCount(skuId,num);
+        if (udp>0){
+            return new Result(true,StatusCode.OK,"商品递减成功");
+        }else{
+            throw new RuntimeException("商品递减失败");
+        }
+    }
+
     /***
      * Sku分页条件搜索实现
      * @param sku

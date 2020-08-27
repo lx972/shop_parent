@@ -3,9 +3,7 @@ package cn.lx.shop.user.feign;
 import cn.lx.shop.entity.Result;
 import cn.lx.shop.user.pojo.User;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * cn.lx.shop.user.feign
@@ -25,4 +23,14 @@ public interface UserFeign {
      */
     @GetMapping("/{id}")
     Result<User> findById(@PathVariable String id);
+
+
+    /**
+     * 付款后增加用户积分
+     * @param totalMoney
+     * @return
+     * @throws Exception
+     */
+    @PutMapping(value = "")
+    Result addUserPoints(@RequestParam String totalMoney);
 }

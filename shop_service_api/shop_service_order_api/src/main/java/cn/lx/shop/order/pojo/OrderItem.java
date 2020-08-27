@@ -49,7 +49,7 @@ public class OrderItem implements Serializable{
 
 	@ApiModelProperty(value = "单价",required = false)
     @Column(name = "price")
-	private Integer price;//单价
+	private Double price;//单价
 
 	@ApiModelProperty(value = "数量",required = false)
     @Column(name = "num")
@@ -57,7 +57,7 @@ public class OrderItem implements Serializable{
 
 	@ApiModelProperty(value = "总金额",required = false)
     @Column(name = "money")
-	private Integer money;//总金额
+	private Double money;//总金额
 
 	@ApiModelProperty(value = "实付金额",required = false)
     @Column(name = "pay_money")
@@ -154,12 +154,12 @@ public class OrderItem implements Serializable{
 		this.name = name;
 	}
 	//get方法
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
 	//set方法
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	//get方法
@@ -172,12 +172,12 @@ public class OrderItem implements Serializable{
 		this.num = num;
 	}
 	//get方法
-	public Integer getMoney() {
+	public Double getMoney() {
 		return money;
 	}
 
 	//set方法
-	public void setMoney(Integer money) {
+	public void setMoney(Double money) {
 		this.money = money;
 	}
 	//get方法

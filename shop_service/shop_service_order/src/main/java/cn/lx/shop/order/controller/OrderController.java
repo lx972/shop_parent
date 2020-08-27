@@ -1,4 +1,5 @@
 package cn.lx.shop.order.controller;
+import cn.lx.shop.entity.TokenDecode;
 import cn.lx.shop.order.pojo.Order;
 import cn.lx.shop.order.service.OrderService;
 import com.github.pagehelper.PageInfo;
@@ -23,6 +24,19 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    /**
+     * 添加订单
+     * @param order
+     * @return
+     */
+    @PostMapping(value = "/add")
+    public Result add(@RequestBody Order order){
+        String username = TokenDecode.decodeToken().get("username");
+        order.setUsername(username);
+        orderService.add(order);
+        return new Result(true,StatusCode.OK,"订单添加成功");
+    }
 
     /***
      * Order分页条件搜索实现
@@ -105,18 +119,6 @@ public class OrderController {
         return new Result(true,StatusCode.OK,"修改成功");
     }
 
-    /***
-     * 新增Order数据
-     * @param order
-     * @return
-     */
-    @ApiOperation(value = "Order添加",notes = "添加Order方法详情",tags = {"OrderController"})
-    @PostMapping
-    public Result add(@RequestBody  @ApiParam(name = "Order对象",value = "传入JSON数据",required = true) Order order){
-        //调用OrderService实现添加Order
-        orderService.add(order);
-        return new Result(true,StatusCode.OK,"添加成功");
-    }
 
     /***
      * 根据ID查询Order数据

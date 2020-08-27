@@ -43,4 +43,14 @@ public interface SkuFeign {
     @GetMapping("/{id}")
     Result<Sku> findById(@PathVariable String id);
 
+
+    /**
+     * 下单后更新商品库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @PutMapping(value = "/decr/count")
+    Result decrCount(@RequestParam String skuId,@RequestParam String num);
+
 }

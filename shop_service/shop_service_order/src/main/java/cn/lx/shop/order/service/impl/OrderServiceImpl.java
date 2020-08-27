@@ -1,13 +1,22 @@
 package cn.lx.shop.order.service.impl;
+import cn.lx.shop.entity.IdWorker;
+import cn.lx.shop.goods.feign.SkuFeign;
+import cn.lx.shop.goods.pojo.Sku;
+import cn.lx.shop.order.dao.OrderItemMapper;
 import cn.lx.shop.order.dao.OrderMapper;
 import cn.lx.shop.order.pojo.Order;
+import cn.lx.shop.order.pojo.OrderItem;
 import cn.lx.shop.order.service.OrderService;
+import cn.lx.shop.user.feign.UserFeign;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.Date;
 import java.util.List;
 /****
  * @Author:shenkunlin
@@ -20,6 +29,84 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private IdWorker idWorker;
+
+    @Autowired
+    private SkuFeign skuFeign;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private UserFeign userFeign;
+
+
+    /**
+     * 生成订单
+     * @param order
+     */
+    @Override
+    public void add(Order order){
+
+        order.setId(String.valueOf(idWorker.nextId()));
+        //取出购物车中的所有商品
+        List<OrderItem> orderItems = redisTemplate.boundHashOps("car_" + order.getUsername()).values();
+        //数量合计
+        Integer totalNum=0;
+        //金额合计
+        double totalMoney=0;
+        for (OrderItem orderItem : orderItems) {
+            //判断是否是购物车中勾选的商品
+            if (order.getSkuIds().contains(orderItem.getSkuId())){
+                //判断是否异价，以sql中的价格为准
+                Sku sku = skuFeign.findById(orderItem.getSkuId()).getData();
+                totalNum+=orderItem.getNum();
+                totalMoney+=sku.getPrice();
+                orderItem.setPrice(sku.getPrice());
+                orderItem.setOrderId(order.getId());
+                orderItem.setId(String.valueOf(idWorker.nextId()));
+                //递减库存
+                skuFeign.decrCount(orderItem.getSkuId(),orderItem.getNum().toString());
+                //将订单明细存入数据库中
+                orderItemMapper.insertSelective(orderItem);
+                //从购物车中移除该商品
+                redisTemplate.boundHashOps("car_" + order.getUsername()).delete(orderItem.getSkuId());
+            }
+
+        }
+        //数量合计
+        order.setTotalNum(totalNum);
+        //金额合计
+        order.setTotalMoney(totalMoney);
+        //实付金额
+        order.setPayMoney(totalMoney);
+        //优惠金额
+        order.setPreMoney(totalMoney-totalMoney);
+        //在线支付
+        order.setPayType("1");
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        //1 买家已评价 0 未评价
+        order.setBuyerRate("0");
+        //订单来源 1 web
+        order.setSourceType("1");
+        //0 未完成 1 订单已完成
+        order.setOrderStatus("0");
+        //0 未支付
+        order.setPayStatus("0");
+        //0 未发货
+        order.setConsignStatus("0");
+        //0 未删除
+        order.setIsDelete("0");
+        orderMapper.insert(order);
+        //付款后增加用户积分
+        userFeign.addUserPoints(order.getTotalMoney().toString());
+
+    }
 
     /**
      * Order条件+分页查询
@@ -167,7 +254,7 @@ public class OrderServiceImpl implements OrderService {
             if(!StringUtils.isEmpty(order.getTransactionId())){
                     criteria.andEqualTo("transactionId",order.getTransactionId());
             }
-            // 订单状态 
+            // 订单状态
             if(!StringUtils.isEmpty(order.getOrderStatus())){
                     criteria.andEqualTo("orderStatus",order.getOrderStatus());
             }
@@ -205,14 +292,7 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateByPrimaryKey(order);
     }
 
-    /**
-     * 增加Order
-     * @param order
-     */
-    @Override
-    public void add(Order order){
-        orderMapper.insert(order);
-    }
+
 
     /**
      * 根据ID查询Order

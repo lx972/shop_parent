@@ -1,9 +1,6 @@
 package cn.lx.shop.user.controller;
 
-import cn.lx.shop.entity.BCrypt;
-import cn.lx.shop.entity.PageResult;
-import cn.lx.shop.entity.Result;
-import cn.lx.shop.entity.StatusCode;
+import cn.lx.shop.entity.*;
 import cn.lx.shop.user.pojo.User;
 import cn.lx.shop.user.service.UserService;
 import cn.lx.shop.user.utils.JwtUtil;
@@ -11,7 +8,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -34,6 +30,23 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * 付款后增加用户积分
+     * @param totalMoney
+     * @return
+     * @throws Exception
+     */
+    @PutMapping(value = "")
+    public Result addUserPoints(@RequestParam String totalMoney) throws Exception {
+        String username = TokenDecode.decodeToken().get("username");
+        int upd=userService.addUserPoints(username,totalMoney);
+        if (upd>0){
+            return new Result(true,StatusCode.OK,"用户积分添加成功");
+        }else {
+            throw new RuntimeException("用户积分添加失败");
+        }
+    }
 
 
     /**

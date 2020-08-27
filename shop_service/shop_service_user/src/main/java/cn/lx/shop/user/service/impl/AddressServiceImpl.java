@@ -167,4 +167,18 @@ public class AddressServiceImpl implements AddressService {
     public List<Address> findAll() {
         return addressMapper.selectAll();
     }
+
+
+    /**
+     * 根据username查询拥有的地址列表
+     * @param username
+     * @return
+     */
+    @Override
+    public List<Address> list(String username) {
+        Address address = new Address();
+        address.setUsername(username);
+        List<Address> list = addressMapper.select(address);
+        return list;
+    }
 }

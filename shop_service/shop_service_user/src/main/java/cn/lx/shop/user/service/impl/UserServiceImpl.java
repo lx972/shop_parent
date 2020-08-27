@@ -207,4 +207,16 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return userMapper.selectAll();
     }
+
+    /**
+     * 付款后增加用户积分
+     * @param username
+     * @param totalMoney
+     * @return
+     */
+    @Override
+    public int addUserPoints(String username, String totalMoney) {
+        int upd=userMapper.addUserPoints(username,totalMoney);
+        return upd;
+    }
 }

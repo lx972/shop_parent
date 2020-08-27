@@ -3,6 +3,7 @@ package cn.lx.shop.user.controller;
 import cn.lx.shop.entity.PageResult;
 import cn.lx.shop.entity.Result;
 import cn.lx.shop.entity.StatusCode;
+import cn.lx.shop.entity.TokenDecode;
 import cn.lx.shop.user.pojo.Address;
 import cn.lx.shop.user.service.AddressService;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +26,20 @@ public class AddressController {
 
     @Autowired
     private AddressService addressService;
+
+    /***
+     * 根据username查询拥有的地址列表
+     * @return
+     */
+    @GetMapping("/user/list")
+    public Result<List<Address>> list(){
+        String username = TokenDecode.decodeToken().get("username");
+
+        //调用AddressService实现根据主键查询Address
+        List<Address> list = addressService.list(username);
+        return new Result<List<Address>>(true,StatusCode.OK,"地址列表成功",list);
+    }
+
 
     /***
      * Address分页条件搜索实现
