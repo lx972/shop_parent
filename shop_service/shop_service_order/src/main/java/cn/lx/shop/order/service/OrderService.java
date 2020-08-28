@@ -2,6 +2,8 @@ package cn.lx.shop.order.service;
 import cn.lx.shop.order.pojo.Order;
 import com.github.pagehelper.PageInfo;
 import java.util.List;
+import java.util.Map;
+
 /****
  * @Author:shenkunlin
  * @Description:Order业务层接口
@@ -63,4 +65,27 @@ public interface OrderService {
      * @return
      */
     List<Order> findAll();
+
+
+    /**
+     * 修改订单支付状态
+     * @param resultMap
+     * @return
+     */
+    int updatePayStatus(Map<String, String> resultMap);
+
+
+    /**
+     * 逻辑删除订单
+     * @param out_trade_no
+     * @return
+     */
+    int logicDelete(String out_trade_no);
+
+    /**
+     * 订单超时
+     * @param orderId
+     * @return
+     */
+    int orderTimeout(String orderId);
 }

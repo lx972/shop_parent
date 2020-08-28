@@ -27,13 +27,29 @@ public class SkuController {
     private SkuService skuService;
 
     /**
+     * 订单支付失败后回滚库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @PutMapping(value = "/roll/back/inventory")
+    public Result rollBackInventory(@RequestParam String skuId,@RequestParam String num){
+        int udp=skuService.rollBackInventory(skuId,num);
+        if (udp>0){
+            return new Result(true,StatusCode.OK,"回滚库存成功");
+        }else{
+            throw new RuntimeException("回滚库存失败");
+        }
+    }
+
+    /**
      * 下单后更新商品库存
      * @param skuId
      * @param num
      * @return
      */
     @PutMapping(value = "/decr/count")
-    public Result decrCount(String skuId,String num){
+    public Result decrCount(@RequestParam String skuId,@RequestParam String num){
         int udp=skuService.decrCount(skuId,num);
         if (udp>0){
             return new Result(true,StatusCode.OK,"商品递减成功");

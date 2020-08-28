@@ -7,17 +7,26 @@ import cn.lx.shop.order.dao.OrderMapper;
 import cn.lx.shop.order.pojo.Order;
 import cn.lx.shop.order.pojo.OrderItem;
 import cn.lx.shop.order.service.OrderService;
-import cn.lx.shop.user.feign.UserFeign;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 /****
  * @Author:shenkunlin
  * @Description:Order业务层接口实现类
@@ -42,8 +51,19 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemMapper orderItemMapper;
 
     @Autowired
-    private UserFeign userFeign;
+    private RabbitTemplate rabbitTemplate;
 
+    /**
+     * 交换机的名字
+     */
+    @Value("${mq.order.directExchange}")
+    private String directExchange;
+
+    /**
+     * 延时队列名
+     */
+    @Value("${mq.order.queue}")
+    private String queue;
 
     /**
      * 生成订单
@@ -103,8 +123,15 @@ public class OrderServiceImpl implements OrderService {
         //0 未删除
         order.setIsDelete("0");
         orderMapper.insert(order);
-        //付款后增加用户积分
-        userFeign.addUserPoints(order.getTotalMoney().toString());
+        //该订单发送到mq
+        rabbitTemplate.convertAndSend(queue,(Object) JSON.toJSONString(order.getId()),new MessagePostProcessor(){
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                //设置超时时间
+                message.getMessageProperties().setExpiration("1800000");
+                return message;
+            }
+        });
 
     }
 
@@ -311,5 +338,71 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findAll() {
         return orderMapper.selectAll();
+    }
+
+    /**
+     * 修改订单支付状态
+     * @param resultMap
+     * @return
+     */
+    @Override
+    public int updatePayStatus(Map<String, String> resultMap) {
+        Order order = new Order();
+        order.setId(resultMap.get("out_trade_no"));
+        //1为已支付
+        order.setPayStatus("1");
+        try {
+            //支付完成时间
+            order.setPayTime(new SimpleDateFormat("yyyyMMddHHmmss").parse(resultMap.get("time_end")));
+            //订单的更新时间
+            order.setUpdateTime(order.getPayTime());
+            //交易流水号
+            order.setTransactionId(resultMap.get("transaction_id"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int i = orderMapper.insertSelective(order);
+        return i;
+    }
+
+    /**
+     * 逻辑删除订单
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public int logicDelete(String out_trade_no) {
+        Order order = new Order();
+        order.setId("out_trade_no");
+        //1为删除
+        order.setIsDelete("1");
+        int i = orderMapper.insertSelective(order);
+        //回滚库存
+        OrderItem orderItem=new OrderItem();
+        orderItem.setOrderId(out_trade_no);
+        List<OrderItem> orderItemList = orderItemMapper.select(orderItem);
+        for (OrderItem item : orderItemList) {
+            skuFeign.rollBackInventory(item.getSkuId(),item.getNum().toString());
+        }
+        return i;
+    }
+
+    /**
+     * 订单超时
+     * @param orderId
+     * @return
+     */
+    @Override
+    public int orderTimeout(String orderId) {
+        Order timeoutOrder = orderMapper.selectByPrimaryKey(orderId);
+        if (!timeoutOrder.getPayStatus().equalsIgnoreCase("1")){
+            //该订单未支付
+            //将订单设置为关闭状态
+            timeoutOrder.setOrderStatus("2");
+            timeoutOrder.setCloseTime(new Date());
+            int i = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
+            return i;
+        }
+        return 0;
     }
 }

@@ -18,7 +18,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.order"})
 @EnableEurekaClient
 @MapperScan(basePackages = "cn.lx.shop.order.dao")
-@EnableFeignClients(basePackages = {"cn.lx.shop.goods.feign","cn.lx.shop.user.feign"})
+@EnableFeignClients(basePackages = {"cn.lx.shop.goods.feign","cn.lx.shop.user.feign","cn.lx.shop.pay.feign"})
 public class OrderStart {
 
     public static void main(String[] args) {

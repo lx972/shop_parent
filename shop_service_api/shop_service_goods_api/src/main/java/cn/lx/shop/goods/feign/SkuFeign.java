@@ -53,4 +53,14 @@ public interface SkuFeign {
     @PutMapping(value = "/decr/count")
     Result decrCount(@RequestParam String skuId,@RequestParam String num);
 
+
+    /**
+     * 订单支付失败后回滚库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @PutMapping(value = "/roll/back/inventory")
+    public Result rollBackInventory(@RequestParam String skuId,@RequestParam String num);
+
 }

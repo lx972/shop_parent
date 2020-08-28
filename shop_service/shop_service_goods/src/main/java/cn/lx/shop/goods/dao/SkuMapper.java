@@ -19,4 +19,13 @@ public interface SkuMapper extends Mapper<Sku> {
      */
     @Update("UPDATE tb_sku SET num=num-#{num},sale_num=sale_num+#{num} WHERE num>=#{num} AND id=#{skuId}")
     int decrCount(@Param("skuId") String skuId,@Param("num") String num);
+
+    /**
+     * 订单支付失败后回滚库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @Update("update tb_sku set num=num+#{num},sale_num=sale_num-#{num} where sale_num>=#{num} and id=#{skuId")
+    int rollBackInventory(@Param("skuId") String skuId, @Param("num") String num);
 }

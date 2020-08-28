@@ -7,6 +7,11 @@ spring:
     url: jdbc:mysql://192.168.43.33:3306/shop_order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 1234
+  rabbitmq:
+    port: 5672
+    username: admin
+    password: admin
+    host: 192.168.43.33
 
 
   redis:
@@ -49,3 +54,12 @@ hystrix:
             timeoutInMilliseconds: 10000
           #修改hystrix的隔离策略
           strategy: SEMAPHORE
+
+#订单超时交换机和队列
+mq:
+  order:
+    directExchange: exchange.order
+    deadLetterQueue: queue.dead.order
+    queue: queue.order
+  pay:
+    queue: queue.pay

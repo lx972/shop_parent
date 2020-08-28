@@ -71,4 +71,12 @@ public interface SkuService {
      * @return
      */
     int decrCount(String skuId, String num);
+
+    /**
+     * 订单支付失败后回滚库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    int rollBackInventory(String skuId, String num);
 }

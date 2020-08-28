@@ -229,4 +229,16 @@ public class SkuServiceImpl implements SkuService {
         int udp = skuMapper.decrCount(skuId, num);
         return udp;
     }
+
+    /**
+     * 订单支付失败后回滚库存
+     * @param skuId
+     * @param num
+     * @return
+     */
+    @Override
+    public int rollBackInventory(String skuId, String num) {
+        int upd=skuMapper.rollBackInventory(skuId,num);
+        return upd;
+    }
 }
