@@ -1,0 +1,48 @@
+server:
+  port: 18091
+spring:
+  application:
+    name: seckill
+
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://192.168.43.33:3306/shop_seckill?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    port: 6379
+    host: 192.168.43.33
+    database: 5
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:7001/eureka
+  instance:
+    prefer-ip-address: true
+
+#启用feign服务熔断
+feign:
+  hystrix:
+    enabled: true
+
+
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          #修改hystrix的隔离策略
+          strategy: SEMAPHORE
+
+mybatis:
+  configuration:
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #驼峰命名
+    map-underscore-to-camel-case: true
+  type-aliases-package: cn.lx.shop.seckill.pojo

@@ -19,6 +19,7 @@
         <module>shop_service_user_api</module>
         <module>shop_service_order_api</module>
         <module>shop_service_pay_api</module>
+        <module>shop_service_seckill_api</module>
     </modules>
 
 

@@ -21,6 +21,7 @@
         <module>shop_service_user</module>
         <module>shop_service_order</module>
         <module>shop_service_pay</module>
+        <module>shop_service_seckill</module>
     </modules>
 
 
