@@ -31,10 +31,10 @@ public class MqConfig {
     private String queue;
 
     /**
-     * 指定发送的队列
+     * 秒杀的队列的名字
      */
-    @Value("${mq.pay.routingKey}")
-    private String routingKey;
+    @Value("${mq.pay.seckillQueue}")
+    private String seckillQueue;
 
 
     /**
@@ -58,11 +58,32 @@ public class MqConfig {
 
 
     /**
+     * 秒杀的队列的名字
+     * @return
+     */
+    @Bean
+    public Queue seckillQueue(){
+        return new Queue(seckillQueue,true);
+    }
+
+
+    /**
      * 队列绑定到交换机上
      * @return
      */
     @Bean
-    public Binding binding(){
-        return BindingBuilder.bind(queue()).to(directExchange()).with(routingKey);
+    public Binding bindingQueue(){
+        return BindingBuilder.bind(queue()).to(directExchange()).with(queue);
+    }
+
+
+
+    /**
+     * 秒杀队列绑定到交换机上
+     * @return
+     */
+    @Bean
+    public Binding bindingSeckillQueue(){
+        return BindingBuilder.bind(seckillQueue()).to(directExchange()).with(seckillQueue);
     }
 }

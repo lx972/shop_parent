@@ -1,6 +1,7 @@
 package cn.lx.shop.seckill.service;
 import cn.lx.shop.seckill.pojo.SeckillOrder;
 import com.github.pagehelper.PageInfo;
+
 import java.util.List;
 /****
  * @Author:shenkunlin
@@ -8,6 +9,17 @@ import java.util.List;
  * @Date 2019/6/14 0:16
  *****/
 public interface SeckillOrderService {
+
+    /**
+     * 更新订单支付状态
+     * @param username
+     * @param time_end
+     * @param transaction_id
+     * @return
+     */
+    int updatePayStatus(String username,String time_end,String transaction_id);
+
+
 
     /***
      * SeckillOrder多条件分页查询
@@ -63,4 +75,11 @@ public interface SeckillOrderService {
      * @return
      */
     List<SeckillOrder> findAll();
+
+    /**
+     * 删除订单，并回滚库存
+     * @param username
+     * @return
+     */
+    void logicDelete(String username);
 }

@@ -52,4 +52,4 @@ mq:
   pay:
     directExchange: exchange.pay
     queue: queue.pay
-    routingKey: queue.pay
+    seckillQueue: queue.seckillPay

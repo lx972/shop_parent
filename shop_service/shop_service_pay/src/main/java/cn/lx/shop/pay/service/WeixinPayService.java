@@ -18,7 +18,7 @@ public interface WeixinPayService {
      * @return
      * @throws Exception
      */
-    Map<String, String> createNative(Map<String, String> map) throws Exception;
+    Map<String, String> createNative(Map<String, String> map,String username) throws Exception;
 
     /**
      * 查询订单状态

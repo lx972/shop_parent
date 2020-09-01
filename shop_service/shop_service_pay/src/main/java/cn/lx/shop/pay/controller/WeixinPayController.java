@@ -2,6 +2,7 @@ package cn.lx.shop.pay.controller;
 
 import cn.lx.shop.entity.Result;
 import cn.lx.shop.entity.StatusCode;
+import cn.lx.shop.entity.TokenDecode;
 import cn.lx.shop.pay.service.WeixinPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +66,8 @@ public class WeixinPayController {
      */
     @PostMapping(value = "/create/native")
     public Result createNative(@RequestBody Map<String,String> map) throws Exception {
-        Map<String,String> resultMap= weixinPayService.createNative(map);
+        String username = TokenDecode.decodeToken().get("username");
+        Map<String,String> resultMap= weixinPayService.createNative(map,username);
         return new Result(true, StatusCode.OK,"生成二维码成功",resultMap);
     }
 

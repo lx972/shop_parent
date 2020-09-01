@@ -52,18 +52,6 @@ public class WeixinPayServiceImpl implements WeixinPayService {
     private String notify_url;
 
 
-    /**
-     * 交换机的名字
-     */
-    @Value("${mq.pay.directExchange}")
-    private String directExchange;
-
-
-    /**
-     * 指定发送的队列
-     */
-    @Value("${mq.pay.routingKey}")
-    private String routingKey;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -75,9 +63,9 @@ public class WeixinPayServiceImpl implements WeixinPayService {
      * @throws Exception
      */
     @Override
-    public Map<String, String> createNative(Map<String, String> map) throws Exception {
+    public Map<String, String> createNative(Map<String, String> map,String username) throws Exception {
         //下单参数封装
-        String mapToXml = handleMap(map);
+        String mapToXml = handleMap(map,username);
         String url="https://api.mch.weixin.qq.com/pay/unifiedorder";
         Map<String, String> resultMap = sendToUrl(mapToXml, url);
         return resultMap;
@@ -103,10 +91,11 @@ public class WeixinPayServiceImpl implements WeixinPayService {
     /**
      * 下单参数封装
      * @param map
+     * @param username
      * @return
      * @throws Exception
      */
-    private String handleMap(Map<String, String> map) throws Exception {
+    private String handleMap(Map<String, String> map,String username) throws Exception {
         //公众账号id
         map.put("appid",appid);
         //商户号
@@ -125,6 +114,15 @@ public class WeixinPayServiceImpl implements WeixinPayService {
         map.put("time_start", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         //交易类型
         map.put("trade_type", "NATIVE");
+        //附加参数
+        Map<String,String> attach=new HashMap<>(16);
+        attach.put("exchange",map.get("exchange"));
+        attach.put("queue",map.get("queue"));
+        attach.put("username",username);
+        map.put("attach", JSON.toJSONString(attach));
+        //删除map中的mq的相关参数
+        map.remove("exchange");
+        map.remove("queue");
         //签名
         String signature = WXPayUtil.generateSignature(map, signKey);
         map.put("sign", signature);
@@ -178,6 +176,9 @@ public class WeixinPayServiceImpl implements WeixinPayService {
         bos.close();
         is.close();
         Map<String, String> resultMap = WXPayUtil.xmlToMap(resultXml);
+        //得到附加参数
+        String attach = resultMap.get("attach");
+        Map<String,String> attachMap = JSON.parseObject(attach, Map.class);
         //回应微信，已收到通知，不需要继续发送
         Map<String, String> resultToWX =new HashMap<>(16);
         resultToWX.put("return_code","SUCCESS");
@@ -185,7 +186,7 @@ public class WeixinPayServiceImpl implements WeixinPayService {
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(WXPayUtil.mapToXml(resultToWX).getBytes());
         //向mq发送消息
-        rabbitTemplate.convertAndSend(directExchange,routingKey, JSON.toJSONString(resultMap));
+        rabbitTemplate.convertAndSend(attachMap.get("exchange"),attachMap.get("queue"), JSON.toJSONString(resultMap));
         //return resultMap;
     }
 

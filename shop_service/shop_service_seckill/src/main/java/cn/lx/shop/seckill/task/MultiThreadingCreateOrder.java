@@ -5,7 +5,13 @@ import cn.lx.shop.seckill.dao.SeckillGoodsMapper;
 import cn.lx.shop.seckill.pojo.SeckillGoods;
 import cn.lx.shop.seckill.pojo.SeckillOrder;
 import cn.lx.shop.seckill.pojo.SeckillStatus;
+import com.alibaba.fastjson.JSON;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -30,6 +36,15 @@ public class MultiThreadingCreateOrder {
 
     @Autowired
     private SeckillGoodsMapper seckillGoodsMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    /**
+     * 延时队列名
+     */
+    @Value("${mq.order.queue}")
+    private String queue;
 
     /**
      * 多线程下单
@@ -79,7 +94,7 @@ public class MultiThreadingCreateOrder {
                 //未支付
                 seckillOrder.setStatus("0");
                 //将秒杀商品订单存入到redis中
-                redisTemplate.boundHashOps("userOrders_" + substringTime).put(username, seckillOrder);
+                redisTemplate.boundHashOps("userOrders").put(username, seckillOrder);
                 //减少库存
                 Long surplusCount = redisTemplate.boundHashOps("seckillGoodsCount_" + skuId).increment(skuId, -1);
                 //不要直接使用 seckillGood.setStockCount(seckillGood.getetStockCount()-1);,并发情况下不精确
@@ -90,12 +105,12 @@ public class MultiThreadingCreateOrder {
                 if (surplusCount <= 0) {
                     //没有库存了，同步数据到mysql中
                     seckillGoodsMapper.updateByPrimaryKeySelective(seckillGood);
-                   /* //删除redis中的该秒杀商品信息
-                    redisTemplate.boundHashOps("seckillGoods_" + substringTime).delete(seckillGood.getItemId().toString());*/
+                    //删除redis中的该秒杀商品信息
+                    redisTemplate.boundHashOps("seckillGoods_" + substringTime).delete(seckillGood.getItemId().toString());
+                }else {
+                    //同步数据到redis中
+                    redisTemplate.boundHashOps("seckillGoods_" + substringTime).put(seckillGood.getItemId().toString(), seckillGood);
                 }
-
-                //同步数据到redis中
-                redisTemplate.boundHashOps("seckillGoods_" + substringTime).put(seckillGood.getItemId().toString(), seckillGood);
 
                 //抢单成功，修改抢单的状态,2:秒杀等待支付
                 seckillStatus.setStatus("2");
@@ -105,6 +120,15 @@ public class MultiThreadingCreateOrder {
                 seckillStatus.setMoney(Float.valueOf(seckillOrder.getMoney()));
                 //抢单状态存入到redis中
                 redisTemplate.boundHashOps("SeckillStatus").put(username,seckillStatus);
+                //向rabbit发送一个消息30分钟后才能被监听到
+                rabbitTemplate.convertAndSend(queue,(Object) JSON.toJSONString(seckillStatus),new MessagePostProcessor(){
+                    @Override
+                    public Message postProcessMessage(Message message) throws AmqpException {
+                        //设置超时时间
+                        message.getMessageProperties().setExpiration("10000");
+                        return message;
+                    }
+                });
             }
             System.out.println("抢单成功");
         } catch (Exception e) {

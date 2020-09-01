@@ -15,6 +15,12 @@ spring:
     port: 6379
     host: 192.168.43.33
     database: 5
+  rabbitmq:
+    port: 5672
+    username: admin
+    password: admin
+    host: 192.168.43.33
+
 
 eureka:
   client:
@@ -46,3 +52,14 @@ mybatis:
     #驼峰命名
     map-underscore-to-camel-case: true
   type-aliases-package: cn.lx.shop.seckill.pojo
+
+#订单超时交换机和队列
+mq:
+  order:
+    directExchange: exchange.seckilOrder
+    deadLetterQueue: queue.dead.seckilOrder
+    queue: queue.seckilOrder
+  pay:
+    seckillQueue: queue.seckillPay
+
+
