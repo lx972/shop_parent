@@ -13,7 +13,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @Author Administrator
  * @date 15:54
  */
-@SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.goods"})
+@SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.goods","cn.lx.shop.seata"})
 @EnableEurekaClient
 @MapperScan("cn.lx.shop.goods.dao")
 public class GoodsStart {

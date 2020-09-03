@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @Author Administrator
  * @date 17:09
  */
-@ControllerAdvice
+//@ControllerAdvice
 public class BaseExceptionHandler {
 
 

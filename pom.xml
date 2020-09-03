@@ -16,6 +16,7 @@
         <module>shop_common</module>
         <module>shop_common_db</module>
         <module>shop_user_oauth</module>
+        <module>shop_seata</module>
     </modules>
     <packaging>pom</packaging>
 

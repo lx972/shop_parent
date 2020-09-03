@@ -15,10 +15,10 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @Author Administrator
  * @date 15:54
  */
-@SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.order"})
+@SpringBootApplication(scanBasePackages = {"cn.lx.shop.exception","cn.lx.shop.order","cn.lx.shop.seata"})
 @EnableEurekaClient
 @MapperScan(basePackages = "cn.lx.shop.order.dao")
-@EnableFeignClients(basePackages = {"cn.lx.shop.goods.feign","cn.lx.shop.user.feign","cn.lx.shop.pay.feign"})
+@EnableFeignClients(basePackages = {"cn.lx.shop.goods.feign","cn.lx.shop.user.feign", "cn.lx.shop.wxpay.feign"})
 public class OrderStart {
 
     public static void main(String[] args) {

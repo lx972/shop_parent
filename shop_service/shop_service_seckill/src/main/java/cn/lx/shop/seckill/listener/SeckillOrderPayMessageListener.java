@@ -1,7 +1,7 @@
 package cn.lx.shop.seckill.listener;
 
 import cn.lx.shop.entity.Result;
-import cn.lx.shop.pay.feign.WeixinPayFeign;
+import cn.lx.shop.wxpay.feign.WeixinPayFeign;
 import cn.lx.shop.seckill.pojo.SeckillStatus;
 import cn.lx.shop.seckill.service.SeckillOrderService;
 import com.alibaba.fastjson.JSON;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @date 16:02
  */
 @Component
-@RabbitListener(queues = "${mq.pay.seckillQueue}")
+@RabbitListener(queues = "${mq.wxpay.seckillQueue}")
 public class SeckillOrderPayMessageListener {
 
     @Autowired

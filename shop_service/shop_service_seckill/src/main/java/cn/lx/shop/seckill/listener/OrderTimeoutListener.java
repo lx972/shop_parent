@@ -1,7 +1,7 @@
 package cn.lx.shop.seckill.listener;
 
 import cn.lx.shop.entity.Result;
-import cn.lx.shop.pay.feign.WeixinPayFeign;
+import cn.lx.shop.wxpay.feign.WeixinPayFeign;
 import cn.lx.shop.seckill.pojo.SeckillOrder;
 import cn.lx.shop.seckill.pojo.SeckillStatus;
 import cn.lx.shop.seckill.service.SeckillOrderService;

@@ -227,6 +227,7 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public int decrCount(String skuId, String num) {
         int udp = skuMapper.decrCount(skuId, num);
+        int i=10/0;
         return udp;
     }
 

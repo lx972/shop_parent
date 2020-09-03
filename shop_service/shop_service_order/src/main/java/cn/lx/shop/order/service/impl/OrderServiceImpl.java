@@ -10,6 +10,7 @@ import cn.lx.shop.order.service.OrderService;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -69,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
      * 生成订单
      * @param order
      */
+    @GlobalTransactional
     @Override
     public void add(Order order){
 
@@ -89,12 +91,12 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.setPrice(sku.getPrice());
                 orderItem.setOrderId(order.getId());
                 orderItem.setId(String.valueOf(idWorker.nextId()));
-                //递减库存
-                skuFeign.decrCount(orderItem.getSkuId(),orderItem.getNum().toString());
                 //将订单明细存入数据库中
                 orderItemMapper.insertSelective(orderItem);
                 //从购物车中移除该商品
                 redisTemplate.boundHashOps("car_" + order.getUsername()).delete(orderItem.getSkuId());
+                //递减库存
+                skuFeign.decrCount(orderItem.getSkuId(),orderItem.getNum().toString());
             }
 
         }

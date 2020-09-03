@@ -2,7 +2,7 @@ package cn.lx.shop.order.listener;
 
 import cn.lx.shop.entity.Result;
 import cn.lx.shop.order.service.OrderService;
-import cn.lx.shop.pay.feign.WeixinPayFeign;
+import cn.lx.shop.wxpay.feign.WeixinPayFeign;
 import cn.lx.shop.user.feign.UserFeign;
 import com.alibaba.fastjson.JSON;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;

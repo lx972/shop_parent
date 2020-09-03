@@ -22,7 +22,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan(basePackages = "cn.lx.shop.seckill.dao")
 @EnableScheduling
 @EnableAsync
-@EnableFeignClients(basePackages = {"cn.lx.shop.pay.feign"})
+@EnableFeignClients(basePackages = {"cn.lx.shop.wxpay.feign"})
 public class SeckillStart {
 
     public static void main(String[] args) {

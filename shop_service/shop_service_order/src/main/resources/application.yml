@@ -23,7 +23,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: my_test_tx_group
 eureka:
   client:
     service-url:
